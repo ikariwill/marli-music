@@ -2,6 +2,7 @@ import { Client, ClientOptions, Message } from 'discord.js';
 
 import { sentryCapture } from '../config/sentry';
 import { logger } from '../config/winston';
+import { ICacheDatabase } from '../infra/database/cache/ICacheDatabase';
 import { CommandsHandler } from './commands-handler';
 import { BOT_MESSAGES } from './default-messages';
 
@@ -16,6 +17,7 @@ export class MarliMusic extends Client {
 	constructor(
 		private botInfo: BotInfo,
 		private handler: CommandsHandler,
+		private cache: ICacheDatabase,
 		options?: ClientOptions,
 	) {
 		super(options);

@@ -7,6 +7,7 @@ import express, {
 	Response,
 	Router,
 } from 'express';
+import { RedisDB } from 'infra/database/cache/providers/redis';
 import { join } from 'path';
 
 import { CommandsHandler } from './bot/commands-handler';
@@ -21,6 +22,8 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const BOT_PREFIX = process.env.BOT_PREFIX;
 
 const botHandler = new CommandsHandler(new YtdlSourceStream());
+
+const cache = new RedisDB();
 
 new MarliMusic(
 	{
