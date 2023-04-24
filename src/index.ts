@@ -1,50 +1,14 @@
-import 'isomorphic-fetch';
+import 'isomorphic-fetch'
 
-import express, {
-	Express,
-	NextFunction,
-	Request,
-	Response,
-	Router,
-} from 'express';
-import { RedisDB } from 'infra/database/cache/providers/redis';
-import { join } from 'path';
+import { botStartup } from 'bot'
+import express, { Express, NextFunction, Request, Response, Router } from 'express'
+import { join } from 'path'
 
-import { CommandsHandler } from './bot/commands-handler';
-import { MarliMusic } from './bot/marli-music';
-import { initConfigs } from './config';
-import { fileLogger, logger } from './config/winston';
-import { YtdlSourceStream } from './sources/ytdl-source/ytdl-source';
+import { initConfigs } from './config'
+import { fileLogger, logger } from './config/winston'
 
 initConfigs();
-
-const BOT_TOKEN = process.env.BOT_TOKEN;
-const BOT_PREFIX = process.env.BOT_PREFIX;
-
-const botHandler = new CommandsHandler(new YtdlSourceStream());
-
-const cache = new RedisDB();
-
-new MarliMusic(
-	{
-		prefix: BOT_PREFIX,
-		token: BOT_TOKEN,
-	},
-	botHandler,
-	{
-		intents: [
-			'Guilds',
-			'GuildMessages',
-			'MessageContent',
-			'GuildVoiceStates',
-			'DirectMessageReactions',
-			'GuildEmojisAndStickers',
-			'GuildMembers',
-			'GuildMessageTyping',
-			'GuildMessageReactions',
-		],
-	},
-);
+botStartup();
 
 const server: Express = express();
 const router = Router();
