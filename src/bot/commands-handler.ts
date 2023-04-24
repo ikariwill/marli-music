@@ -8,12 +8,12 @@ import {
 	StreamType,
 } from '@discordjs/voice';
 
-import { SourceStream } from '../sources/source-stream';
-import { startBotHooks } from './bot-hooks';
-import { BOT_MESSAGES, sendCommandError } from './default-messages';
 import { sentryCapture } from '../config/sentry';
 import { logger } from '../config/winston';
 import { ERRORS } from '../shared/errors';
+import { SourceStream } from '../sources/source-stream';
+import { startBotHooks } from './bot-hooks';
+import { BOT_MESSAGES, sendCommandError } from './default-messages';
 
 export class CommandsHandler {
 	private player: AudioPlayer;
@@ -48,7 +48,6 @@ export class CommandsHandler {
 		startBotHooks(connection, this.player);
 
 		try {
-			
 			const video = await this.sourceStream.getStreamInfo(input);
 
 			const searchResult = video ?? (await this.sourceStream.search(input));
@@ -61,14 +60,15 @@ export class CommandsHandler {
 				inputType: StreamType.Arbitrary,
 			});
 
-			if (!resource.readable) throw new Error (ERRORS.RESOURCE_ERROR)
-			
-			this.player.play(resource)
-			logger.log("info", `valid reource:${resource.readable}`)
+			if (!resource.readable) throw new Error(ERRORS.RESOURCE_ERROR);
+
+			this.player.play(resource);
+			logger.log('info', `valid reource:${resource.readable}`);
 
 			const subscription = connection.subscribe(this.player);
 
-			if (!subscription || !subscription.player) throw new Error(ERRORS.SUBSCRIPTION_ERROR)
+			if (!subscription || !subscription.player)
+				throw new Error(ERRORS.SUBSCRIPTION_ERROR);
 
 			return message.reply({
 				content: `${BOT_MESSAGES.CURRENT_PLAYING} ${
@@ -76,7 +76,7 @@ export class CommandsHandler {
 				}`,
 			});
 		} catch (err) {
-			logger.log("error", err)
+			logger.log('error', err);
 			sendCommandError(JSON.stringify(err), message);
 		}
 	}
@@ -108,13 +108,14 @@ export class CommandsHandler {
 
 	public getPlayer() {
 		try {
-			if (!this.player) this.player = new AudioPlayer({
-				debug: true
-			});
-		return this.player;
-		} catch(error) {
+			if (!this.player)
+				this.player = new AudioPlayer({
+					debug: true,
+				});
+			return this.player;
+		} catch (error) {
 			logger.log('error', error);
-			sentryCapture("audio.error", error)
+			sentryCapture('audio.error', error);
 		}
 	}
 
