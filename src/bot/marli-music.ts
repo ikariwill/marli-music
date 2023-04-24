@@ -1,11 +1,9 @@
 import { Client, ClientOptions, Message } from 'discord.js';
 
-import { Redis } from '@upstash/redis';
-
-import { CommandsHandler } from './commands-handler';
-import { BOT_MESSAGES } from './default-messages';
 import { sentryCapture } from '../config/sentry';
 import { logger } from '../config/winston';
+import { CommandsHandler } from './commands-handler';
+import { BOT_MESSAGES } from './default-messages';
 
 interface BotInfo {
 	prefix: string;
@@ -18,7 +16,6 @@ export class MarliMusic extends Client {
 	constructor(
 		private botInfo: BotInfo,
 		private handler: CommandsHandler,
-		private redis: Redis,
 		options?: ClientOptions,
 	) {
 		super(options);

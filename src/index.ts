@@ -7,13 +7,13 @@ import express, {
 	Response,
 	Router,
 } from 'express';
-import { Redis } from '@upstash/redis';
+import { join } from 'path';
+
 import { CommandsHandler } from './bot/commands-handler';
 import { MarliMusic } from './bot/marli-music';
-import { YtdlSourceStream } from './sources/ytdl-source/ytdl-source';
-import { join } from 'path';
-import { fileLogger, logger } from './config/winston';
 import { initConfigs } from './config';
+import { fileLogger, logger } from './config/winston';
+import { YtdlSourceStream } from './sources/ytdl-source/ytdl-source';
 
 initConfigs();
 
@@ -22,18 +22,12 @@ const BOT_PREFIX = process.env.BOT_PREFIX;
 
 const botHandler = new CommandsHandler(new YtdlSourceStream());
 
-const redis = new Redis({
-	token: process.env.REDIS_TOKEN,
-	url: process.env.REDIS_URL,
-});
-
 new MarliMusic(
 	{
 		prefix: BOT_PREFIX,
 		token: BOT_TOKEN,
 	},
 	botHandler,
-	redis,
 	{
 		intents: [
 			'Guilds',
